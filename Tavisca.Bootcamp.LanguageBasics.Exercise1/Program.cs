@@ -22,50 +22,86 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 
         public static int FindDigit(string equation)
         {
-            double divisor, dividend;
             double result = -1;
-            String resultWithQues = "-1";
-            string[] splitString = equation.Split('=');
-            if (splitString[0].Contains("?"))
-            {
-                string[] splitPart1 = splitString[0].Split('*');
+            String resultWithQuestionMark = "-1";
 
-                if (splitPart1[0].Contains("?"))
+            //split string on basis of =
+            string[] splitString = equation.Split('=');
+
+            try
+            {
+                //check whether first part of splitstring contains ?
+                if (splitString[0].Contains("?"))
                 {
-                    divisor = int.Parse(splitPart1[1]);
-                    dividend = int.Parse(splitString[1]);
-                    resultWithQues = splitPart1[0];
-                    result = dividend / divisor;
+                    //splitting first part of string on basis of *
+                    string[] firstPartSplit = splitString[0].Split('*');
+
+                    //checking whether first part of firstpartsplit contains ?
+                    //If yes then split on basis of ?
+                    if (firstPartSplit[0].Contains("?"))
+                    {
+                        resultWithQuestionMark = firstPartSplit[0];
+                        result = divide(splitString[1], firstPartSplit[1]);
+                    }
+                    else
+                    {
+                        resultWithQuestionMark = firstPartSplit[1];
+                        result = divide(splitString[1], firstPartSplit[0]);
+                    }
                 }
                 else
                 {
-                    divisor = int.Parse(splitPart1[0]);
-                    dividend = int.Parse(splitString[1]);
-                    resultWithQues = splitPart1[1];
-                    result = dividend / divisor;
+                    //splitting first part on basis of *
+                    string[] secondPartSplit = splitString[0].Split('*');
+                    result = multiply(secondPartSplit[1], secondPartSplit[0]);
+                    resultWithQuestionMark = splitString[1];
                 }
             }
-            else
+            catch(Exception exception)
             {
-                string[] splitPart2 = splitString[0].Split('*');
-                divisor = int.Parse(splitPart2[0]);
-                dividend = int.Parse(splitPart2[1]);
-                result = divisor * dividend;
-                resultWithQues = splitString[1];
+                Console.WriteLine(exception.GetType().Name);
             }
 
-            char[] finalResult = resultWithQues.ToCharArray();
+            char[] finalResult = resultWithQuestionMark.ToCharArray();
             char[] number = result.ToString().ToCharArray();
+
+            //checking whether result should not be equal to 0 and 
+            //final result length should be equal to result obtained
             if (result % 1 != 0 || finalResult.Length != number.Length)
             {
                 return -1;
             }
             else
             {
+                //returning number obtained in place of question mark
                 int index = Array.IndexOf(finalResult, '?');
                 return int.Parse(number[index] + "");
             }
-
         }
+
+        //method for division of two numbers
+        public static double divide(string numb1, string numb2)
+        {
+            try
+            {
+                return int.Parse(numb1) / int.Parse(numb2);
+            }
+            catch
+            {
+                throw;
+            }
+            }
+
+        //method for multlipication of two numbers
+        public static double multiply(string numb1, string numb2)
+        {
+            try
+            {
+                return int.Parse(numb1) * int.Parse(numb2);
+            }
+            catch {
+                throw;
+            }
+            }
     }
 }
